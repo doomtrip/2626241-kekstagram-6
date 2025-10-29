@@ -1,51 +1,27 @@
-// Функция проверки длины строки
-
-function testStringLength(string, length) {
-  return string.length >= length;
-}
-testStringLength('проверочная строка', 18);
-testStringLength('проверочная строка', 30);
-
-// Функция проверки, является ли строка палиндромом
-
-function isPalindrome(str) {
-  let check = '';
-  for (let i = str.length - 1; i >= 0; --i) {
-    check += str[i];
+// Функция проверки времени встречи
+function isMeetingWithinWorkHours(workStart, workEnd, meetingStart, meetingDuration) {
+  // Функция для преобразования времени в минуты
+  function timeToMinutes(time) {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
   }
-  return str === check;
-}
-isPalindrome('dad');
-isPalindrome('man');
 
-// Функция извлекающая цифры из строки
-
-function getNumbers(string) {
-  return parseInt(string.replace(/\D+/g, ""));
-}
-getNumbers('test 345');
-getNumbers('1 new test 456');
-
-// Функция возврата исходной строки
-
-const newString = (str, min, plus) => {
-  let result;
-  const symbolNumber = min - str.length;
-  if (symbolNumber % plus.length === 0 && plus.length <= symbolNumber) {
-    result = `${plus.repeat(symbolNumber / plus.length)}${str}`;
-  } else if (str.length >= min) {
-    result = `${str}`;
-  } else if (plus.length >= symbolNumber) {
-    result = `${plus.slice(0, symbolNumber)}${str}`;
-  } else if (symbolNumber % plus.length !== 0) {
-    result = `${plus.slice(0, (symbolNumber % plus.length))}${plus.slice(0,
-      symbolNumber)}${str}`;
-  }
-  return result;
+  // Преобразуем все времена в минуты
+  const workStartMinutes = timeToMinutes(workStart);
+  const workEndMinutes = timeToMinutes(workEnd);
+  const meetingStartMinutes = timeToMinutes(meetingStart);
+  
+  // Вычисляем время окончания встречи
+  const meetingEndMinutes = meetingStartMinutes + meetingDuration;
+  
+  // Проверяем, что встреча полностью вписывается в рабочий день
+  return meetingStartMinutes >= workStartMinutes && 
+         meetingEndMinutes <= workEndMinutes;
 }
 
-newString('1', 2, '0');
-newString('1', 4, '0');
-newString('q', 4, 'werty');
-newString('q', 4, 'we');
-newString('qwerty', 4, '0');
+// Примеры использования (можно удалить после проверки)
+console.log(isMeetingWithinWorkHours('08:00', '17:30', '14:00', 90)); // true
+console.log(isMeetingWithinWorkHours('8:0', '10:0', '8:0', 120));     // true
+console.log(isMeetingWithinWorkHours('08:00', '14:30', '14:00', 90)); // false
+console.log(isMeetingWithinWorkHours('14:00', '17:30', '08:0', 90));  // false
+console.log(isMeetingWithinWorkHours('8:00', '17:30', '08:00', 900)); // false
