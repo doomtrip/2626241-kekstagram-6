@@ -13,12 +13,12 @@ const closeButton = bigPicture.querySelector('.big-picture__cancel');
 const createComment = (comment) => {
   const commentElement = document.createElement('li');
   commentElement.classList.add('social__comment');
-  
+
   commentElement.innerHTML = `
     <img class="social__picture" src="${comment.avatar}" alt="${comment.name}" width="35" height="35">
     <p class="social__text">${comment.message}</p>
   `;
-  
+
   return commentElement;
 };
 
@@ -26,12 +26,12 @@ const createComment = (comment) => {
 const renderComments = (comments) => {
   socialComments.innerHTML = '';
   const fragment = document.createDocumentFragment();
-  
+
   comments.forEach((comment) => {
     const commentElement = createComment(comment);
     fragment.appendChild(commentElement);
   });
-  
+
   socialComments.appendChild(fragment);
 };
 
@@ -58,18 +58,18 @@ const openFullPhoto = (photoData) => {
   likesCount.textContent = photoData.likes;
   commentsCount.textContent = photoData.comments.length;
   socialCaption.textContent = photoData.description;
-  
+
   // Отрисовываем комментарии
   renderComments(photoData.comments);
-  
+
   // Скрываем блоки с комментариями (по заданию)
   commentCountBlock.classList.add('hidden');
   commentsLoader.classList.add('hidden');
-  
+
   // Показываем окно
   bigPicture.classList.remove('hidden');
   body.classList.add('modal-open');
-  
+
   // Добавляем обработчики
   document.addEventListener('keydown', onDocumentKeydown);
   closeButton.addEventListener('click', closeFullPhoto);
