@@ -1,4 +1,5 @@
 import Pristine from '/vendor/pristine/pristine.min.js';
+import { initImageEditor, resetImageEditor } from './image-editor.js';
 
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadOverlay = document.querySelector('.img-upload__overlay');
@@ -22,7 +23,7 @@ const validateHashtags = (value) => {
   }
 
   const hashtags = value.trim().toLowerCase().split(/\s+/);
-  
+
   // Проверка на максимальное количество хэш-тегов
   if (hashtags.length > 5) {
     return false;
@@ -32,12 +33,12 @@ const validateHashtags = (value) => {
 
   for (let i = 0; i < hashtags.length; i++) {
     const hashtag = hashtags[i];
-    
+
     // Проверка формата хэш-тега
     if (!hashtagRegex.test(hashtag)) {
       return false;
     }
-    
+
     // Проверка на повторяющиеся хэш-теги
     if (hashtags.indexOf(hashtag) !== i) {
       return false;
@@ -54,7 +55,7 @@ const getHashtagErrorMessage = (value) => {
   }
 
   const hashtags = value.trim().toLowerCase().split(/\s+/);
-  
+
   if (hashtags.length > 5) {
     return 'Нельзя указать больше пяти хэш-тегов';
   }
@@ -63,7 +64,7 @@ const getHashtagErrorMessage = (value) => {
 
   for (let i = 0; i < hashtags.length; i++) {
     const hashtag = hashtags[i];
-    
+
     if (!hashtagRegex.test(hashtag)) {
       if (hashtag[0] !== '#') {
         return 'Хэш-тег должен начинаться с символа #';
@@ -76,7 +77,7 @@ const getHashtagErrorMessage = (value) => {
       }
       return 'Хэш-тег содержит недопустимые символы';
     }
-    
+
     if (hashtags.indexOf(hashtag) !== i) {
       return 'Один и тот же хэш-тег не может быть использован дважды';
     }
@@ -86,9 +87,7 @@ const getHashtagErrorMessage = (value) => {
 };
 
 // Валидация комментария
-const validateDescription = (value) => {
-  return value.length <= 140;
-};
+const validateDescription = (value) => value.length <= 140;
 
 // Добавляем валидаторы к Pristine
 pristine.addValidator(
@@ -108,22 +107,23 @@ const closeUploadForm = () => {
   uploadOverlay.classList.add('hidden');
   body.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeydown);
-  
-  // Сбрасываем форму и валидацию
+
+  // Сбрасываем форму, валидацию и редактор изображения
   uploadForm.reset();
   pristine.reset();
+  resetImageEditor();
 };
 
 // Обработчик клавиши Esc
 function onDocumentKeydown(evt) {
   if (evt.key === 'Escape') {
     evt.preventDefault();
-    
+
     // Не закрываем форму, если фокус в полях ввода
     if (document.activeElement === hashtagsInput || document.activeElement === descriptionInput) {
       return;
     }
-    
+
     closeUploadForm();
   }
 }
@@ -153,10 +153,13 @@ uploadCancel.addEventListener('click', closeUploadForm);
 // Обработчик отправки формы
 uploadForm.addEventListener('submit', (evt) => {
   const isValid = pristine.validate();
-  
+
   if (!isValid) {
     evt.preventDefault();
   }
 });
+
+// Инициализация редактора изображения при загрузке модуля
+initImageEditor();
 
 export { closeUploadForm };
