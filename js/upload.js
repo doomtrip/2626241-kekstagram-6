@@ -22,7 +22,6 @@ export const initUploadForm = () => {
     uploadForm.reset();
   };
   
-  // Обработчики событий
   document.querySelector('#upload-file').addEventListener('change', openUploadForm);
   document.querySelector('#upload-cancel').addEventListener('click', closeUploadForm);
   
