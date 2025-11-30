@@ -1,8 +1,8 @@
-import { renderThumbnails } from './thumbnail.js';
-import './form.js'; // Импортируем модуль формы
+import { loadAndRenderThumbnails } from './thumbnail.js';
+import './form.js';
 
 const initApp = () => {
-  renderThumbnails();
+  loadAndRenderThumbnails();
 };
 
 document.addEventListener('DOMContentLoaded', initApp);
