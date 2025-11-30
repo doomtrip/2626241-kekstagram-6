@@ -1,4 +1,5 @@
 import { generatePhotos } from './data.js';
+import { openFullPhoto } from './full-photo.js';
 
 const renderThumbnails = () => {
   const picturesContainer = document.querySelector('.pictures');
@@ -16,6 +17,12 @@ const renderThumbnails = () => {
     image.alt = photo.description;
     likes.textContent = photo.likes;
     comments.textContent = photo.comments.length;
+
+    // Добавляем обработчик клика на миниатюру
+    thumbnail.addEventListener('click', (evt) => {
+      evt.preventDefault();
+      openFullPhoto(photo);
+    });
 
     fragment.appendChild(thumbnail);
   });
