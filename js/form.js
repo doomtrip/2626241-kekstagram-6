@@ -1,4 +1,5 @@
 import Pristine from '/vendor/pristine/pristine.min.js';
+import { initImageEditor, resetImageEditor } from './image-editor.js';
 
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadOverlay = document.querySelector('.img-upload__overlay');
@@ -109,9 +110,10 @@ const closeUploadForm = () => {
   body.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeydown);
   
-  // Сбрасываем форму и валидацию
+  // Сбрасываем форму, валидацию и редактор изображения
   uploadForm.reset();
   pristine.reset();
+  resetImageEditor();
 };
 
 // Обработчик клавиши Esc
@@ -158,5 +160,8 @@ uploadForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
   }
 });
+
+// Инициализация редактора изображения при загрузке модуля
+initImageEditor();
 
 export { closeUploadForm };
