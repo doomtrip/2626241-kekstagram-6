@@ -6,13 +6,15 @@ const pictureTemplate = document.querySelector('#picture').content.querySelector
 
 let photos = [];
 
-// Функция для отрисовки миниатюр
-const renderThumbnails = (data) => {
-  photos = data;
-
+// Функция для отрисовки миниатюр (теперь принимает данные как параметр)
+const renderThumbnails = (data = photos) => {
   const fragment = document.createDocumentFragment();
 
-  photos.forEach((photo) => {
+  // Очищаем контейнер
+  const existingThumbnails = picturesContainer.querySelectorAll('.picture');
+  existingThumbnails.forEach((thumbnail) => thumbnail.remove());
+
+  data.forEach((photo) => {
     const thumbnail = pictureTemplate.cloneNode(true);
     const image = thumbnail.querySelector('.picture__img');
     const likes = thumbnail.querySelector('.picture__likes');
@@ -32,10 +34,6 @@ const renderThumbnails = (data) => {
     fragment.appendChild(thumbnail);
   });
 
-  // Очищаем контейнер и добавляем новые миниатюры
-  const existingThumbnails = picturesContainer.querySelectorAll('.picture');
-  existingThumbnails.forEach((thumbnail) => thumbnail.remove());
-
   picturesContainer.appendChild(fragment);
 };
 
@@ -43,7 +41,8 @@ const renderThumbnails = (data) => {
 const loadAndRenderThumbnails = () => {
   getData()
     .then((data) => {
-      renderThumbnails(data);
+      photos = data;
+      renderThumbnails(photos);
     })
     .catch((error) => {
       // Показываем сообщение об ошибке
@@ -70,4 +69,4 @@ const loadAndRenderThumbnails = () => {
     });
 };
 
-export { loadAndRenderThumbnails, photos };
+export { loadAndRenderThumbnails, photos, renderThumbnails };
