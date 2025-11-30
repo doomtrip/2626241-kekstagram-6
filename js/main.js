@@ -1,21 +1,14 @@
 import { generatePhotos } from './data.js';
 import { initFilters } from './filters.js';
 import { initUploadForm } from './upload.js';
+import { isMeetingWithinWorkHours } from './functions.js'; // ДОБАВИТЬ ЭТУ СТРОКУ
 
-// Инициализация приложения
 const initApp = () => {
-  // Генерация данных
-  const photos = generatePhotos();
-  console.log('Сгенерированные фотографии:', photos);
-  
-  // Инициализация фильтров
-  const filters = initFilters();
-  
-  // Инициализация формы загрузки
+  generatePhotos();
+  initFilters();
   initUploadForm();
-  
-  // Другие инициализации...
+
+  isMeetingWithinWorkHours('08:00', '17:30', '14:00', 90);
 };
 
-// Запуск приложения после загрузки DOM
 document.addEventListener('DOMContentLoaded', initApp);

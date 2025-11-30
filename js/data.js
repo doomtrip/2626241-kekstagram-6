@@ -1,6 +1,5 @@
 import { getRandomInteger, getRandomArrayElement, createIdGenerator } from './util.js';
 
-// Константы
 const PHOTOS_COUNT = 25;
 const MIN_LIKES = 15;
 const MAX_LIKES = 200;
@@ -8,7 +7,6 @@ const MIN_COMMENTS = 0;
 const MAX_COMMENTS = 30;
 const AVATAR_COUNT = 6;
 
-// Данные
 const DESCRIPTIONS = [
   'Отличный день для фотографии!',
   'Закат просто волшебный',
@@ -47,17 +45,15 @@ const MESSAGES = [
 ];
 
 const NAMES = [
-  'Артём', 'Мария', 'Дмитрий', 'Анна', 'Сергей', 'Ольга', 
+  'Артём', 'Мария', 'Дмитрий', 'Анна', 'Сергей', 'Ольга',
   'Иван', 'Елена', 'Алексей', 'Наталья', 'Павел', 'Светлана',
   'Михаил', 'Татьяна', 'Андрей', 'Юлия', 'Николай', 'Екатерина',
   'Владимир', 'Ирина', 'Роман', 'Людмила', 'Виктор', 'Марина'
 ];
 
-// Генераторы ID
 const generatePhotoId = createIdGenerator();
 const generateCommentId = createIdGenerator();
 
-// Создание комментария
 const createComment = () => ({
   id: generateCommentId(),
   avatar: `img/avatar-${getRandomInteger(1, AVATAR_COUNT)}.svg`,
@@ -65,7 +61,6 @@ const createComment = () => ({
   name: getRandomArrayElement(NAMES)
 });
 
-// Создание описания фотографии
 const createPhotoDescription = () => ({
   id: generatePhotoId(),
   url: `photos/${getRandomInteger(1, PHOTOS_COUNT)}.jpg`,
@@ -77,6 +72,5 @@ const createPhotoDescription = () => ({
   )
 });
 
-// Генерация массива фотографий
-export const generatePhotos = () => 
+export const generatePhotos = () =>
   Array.from({ length: PHOTOS_COUNT }, createPhotoDescription);
