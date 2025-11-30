@@ -4,7 +4,6 @@ import './form.js';
 
 const initApp = () => {
   loadAndRenderThumbnails().then(() => {
-    // Инициализируем фильтры после загрузки данных
     initFilters();
   });
 };

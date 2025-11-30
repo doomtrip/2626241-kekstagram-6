@@ -1,6 +1,7 @@
 import Pristine from '/vendor/pristine/pristine.min.js';
 import { initImageEditor, resetImageEditor } from './image-editor.js';
 import { sendData } from './api.js';
+import { initImageUpload } from './image-upload.js'; // ДОБАВЛЯЕМ ИМПОРТ
 
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadOverlay = document.querySelector('.img-upload__overlay');
@@ -191,7 +192,13 @@ const openUploadForm = () => {
 };
 
 // Обработчик выбора файла
-uploadInput.addEventListener('change', openUploadForm);
+uploadInput.addEventListener('change', () => {
+  openUploadForm();
+  // Загружаем изображение пользователя
+  if (uploadInput.files.length > 0) {
+    // Инициализация загрузки изображения будет вызвана автоматически через initImageUpload
+  }
+});
 
 // Обработчик кнопки отмена
 uploadCancel.addEventListener('click', closeUploadForm);
@@ -227,7 +234,8 @@ const onFormSubmit = (evt) => {
 
 uploadForm.addEventListener('submit', onFormSubmit);
 
-// Инициализация редактора изображения при загрузке модуля
+// Инициализация редактора изображения и загрузки изображения при загрузке модуля
 initImageEditor();
+initImageUpload(); // ДОБАВЛЯЕМ ИНИЦИАЛИЗАЦИЮ
 
 export { closeUploadForm };
