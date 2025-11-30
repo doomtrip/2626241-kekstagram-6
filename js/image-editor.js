@@ -122,7 +122,7 @@ const onSliderUpdate = () => {
 
   const sliderValue = effectLevelSlider.noUiSlider.get();
   const { filter, unit } = effects[currentEffect];
-  
+
   effectLevelValue.value = sliderValue;
   imagePreview.style.filter = `${filter}(${sliderValue}${unit})`;
 };
@@ -131,7 +131,7 @@ const onEffectsListChange = (evt) => {
   if (evt.target.type === 'radio') {
     currentEffect = evt.target.value;
     updateSlider(currentEffect);
-    
+
     if (currentEffect !== 'none') {
       effectLevelSlider.noUiSlider.set(effects[currentEffect].max);
     }
@@ -142,7 +142,7 @@ const onEffectsListChange = (evt) => {
 const resetImageEditor = () => {
   updateScale(SCALE_DEFAULT);
   currentEffect = 'none';
-  
+
   // Сбрасываем эффекты
   effectsList.querySelector('#effect-none').checked = true;
   imagePreview.style.filter = 'none';
@@ -163,7 +163,7 @@ const initImageEditor = () => {
 
   // Инициализация эффектов
   effectsList.addEventListener('change', onEffectsListChange);
-  
+
   // Скрываем слайдер по умолчанию
   effectLevel.classList.add('hidden');
 };
