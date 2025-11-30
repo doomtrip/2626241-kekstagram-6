@@ -6,7 +6,6 @@ const SCALE_MAX = 100;
 const SCALE_DEFAULT = 100;
 
 const uploadForm = document.querySelector('.img-upload__form');
-const uploadOverlay = document.querySelector('.img-upload__overlay');
 const scaleControlValue = uploadForm.querySelector('.scale__control--value');
 const scaleControlSmaller = uploadForm.querySelector('.scale__control--smaller');
 const scaleControlBigger = uploadForm.querySelector('.scale__control--bigger');
