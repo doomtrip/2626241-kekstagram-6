@@ -1,4 +1,4 @@
-function isMeetingWithinWorkHours(workStart, workEnd, meetingStart, meetingDuration) {
+export function isMeetingWithinWorkHours(workStart, workEnd, meetingStart, meetingDuration) {
   function timeToMinutes(time) {
     const [hours, minutes] = time.split(':').map(Number);
     return hours * 60 + minutes;

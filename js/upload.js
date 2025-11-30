@@ -10,17 +10,18 @@ export const initUploadForm = () => {
     uploadForm.reset();
   };
 
-  const onDocumentKeydown = (evt) => {
-    if (isEscapeKey(evt)) {
-      evt.preventDefault();
-      closeUploadForm();
-    }
-  };
-
   const openUploadForm = () => {
     uploadOverlay.classList.remove('hidden');
     document.addEventListener('keydown', onDocumentKeydown);
   };
+
+  // Function declaration - можно использовать до определения
+  function onDocumentKeydown(evt) {
+    if (isEscapeKey(evt)) {
+      evt.preventDefault();
+      closeUploadForm();
+    }
+  }
 
   document.querySelector('#upload-file').addEventListener('change', openUploadForm);
   document.querySelector('#upload-cancel').addEventListener('click', closeUploadForm);
