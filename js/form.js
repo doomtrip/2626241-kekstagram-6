@@ -1,13 +1,17 @@
 import Pristine from '/vendor/pristine/pristine.min.js';
 import { initImageEditor, resetImageEditor } from './image-editor.js';
+import { sendData } from './api.js';
 
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadOverlay = document.querySelector('.img-upload__overlay');
 const uploadInput = document.querySelector('#upload-file');
 const uploadCancel = document.querySelector('#upload-cancel');
+const uploadSubmit = document.querySelector('#upload-submit');
 const hashtagsInput = uploadForm.querySelector('.text__hashtags');
 const descriptionInput = uploadForm.querySelector('.text__description');
 const body = document.querySelector('body');
+const successTemplate = document.querySelector('#success').content.querySelector('.success');
+const errorTemplate = document.querySelector('#error').content.querySelector('.error');
 
 // Создаем экземпляр Pristine для валидации
 const pristine = new Pristine(uploadForm, {
@@ -19,12 +23,11 @@ const pristine = new Pristine(uploadForm, {
 // Валидация хэш-тегов
 const validateHashtags = (value) => {
   if (value === '') {
-    return true; // хэш-теги не обязательны
+    return true;
   }
 
   const hashtags = value.trim().toLowerCase().split(/\s+/);
 
-  // Проверка на максимальное количество хэш-тегов
   if (hashtags.length > 5) {
     return false;
   }
@@ -34,12 +37,10 @@ const validateHashtags = (value) => {
   for (let i = 0; i < hashtags.length; i++) {
     const hashtag = hashtags[i];
 
-    // Проверка формата хэш-тега
     if (!hashtagRegex.test(hashtag)) {
       return false;
     }
 
-    // Проверка на повторяющиеся хэш-теги
     if (hashtags.indexOf(hashtag) !== i) {
       return false;
     }
@@ -102,6 +103,51 @@ pristine.addValidator(
   'Длина комментария не может составлять больше 140 символов'
 );
 
+// Блокировка/разблокировка кнопки отправки
+const blockSubmitButton = () => {
+  uploadSubmit.disabled = true;
+  uploadSubmit.textContent = 'Публикую...';
+};
+
+const unblockSubmitButton = () => {
+  uploadSubmit.disabled = false;
+  uploadSubmit.textContent = 'Опубликовать';
+};
+
+// Показ сообщений
+const showMessage = (template, closeCallback) => {
+  const message = template.cloneNode(true);
+  const button = message.querySelector('button');
+
+  // Объявляем все функции ДО их использования
+  const closeMessage = () => {
+    message.remove();
+    document.removeEventListener('click', onMessageClick);
+    document.removeEventListener('keydown', onMessageKeydown);
+    if (closeCallback) {
+      closeCallback();
+    }
+  };
+
+  function onMessageClick(evt) {
+    if (!evt.target.closest('.success__inner') && !evt.target.closest('.error__inner')) {
+      closeMessage();
+    }
+  }
+
+  function onMessageKeydown(evt) {
+    if (evt.key === 'Escape') {
+      closeMessage();
+    }
+  }
+
+  button.addEventListener('click', closeMessage);
+  document.addEventListener('click', onMessageClick);
+  document.addEventListener('keydown', onMessageKeydown);
+
+  document.body.appendChild(message);
+};
+
 // Функция закрытия формы
 const closeUploadForm = () => {
   uploadOverlay.classList.add('hidden');
@@ -147,17 +193,39 @@ const openUploadForm = () => {
 // Обработчик выбора файла
 uploadInput.addEventListener('change', openUploadForm);
 
-// Обработчик кнопки отмены
+// Обработчик кнопки отмена
 uploadCancel.addEventListener('click', closeUploadForm);
 
 // Обработчик отправки формы
-uploadForm.addEventListener('submit', (evt) => {
+const onFormSubmit = (evt) => {
+  evt.preventDefault();
+
   const isValid = pristine.validate();
 
   if (!isValid) {
-    evt.preventDefault();
+    return;
   }
-});
+
+  blockSubmitButton();
+
+  const formData = new FormData(evt.target);
+
+  sendData(formData)
+    .then(() => {
+      closeUploadForm();
+      showMessage(successTemplate);
+    })
+    .catch(() => {
+      showMessage(errorTemplate, () => {
+        unblockSubmitButton();
+      });
+    })
+    .finally(() => {
+      unblockSubmitButton();
+    });
+};
+
+uploadForm.addEventListener('submit', onFormSubmit);
 
 // Инициализация редактора изображения при загрузке модуля
 initImageEditor();
