@@ -8,8 +8,7 @@ function isMeetingWithinWorkHours(workStart, workEnd, meetingStart, meetingDurat
   const workEndMinutes = timeToMinutes(workEnd);
   const meetingStartMinutes = timeToMinutes(meetingStart);
   const meetingEndMinutes = meetingStartMinutes + meetingDuration;
-  
-  return meetingStartMinutes >= workStartMinutes && 
+
+  return meetingStartMinutes >= workStartMinutes &&
          meetingEndMinutes <= workEndMinutes;
 }
-

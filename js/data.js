@@ -45,7 +45,7 @@ const MESSAGES = [
 ];
 
 const NAMES = [
-  'Артём', 'Мария', 'Дмитрий', 'Анна', 'Сергей', 'Ольга', 
+  'Артём', 'Мария', 'Дмитрий', 'Анна', 'Сергей', 'Ольга',
   'Иван', 'Елена', 'Алексей', 'Наталья', 'Павел', 'Светлана',
   'Михаил', 'Татьяна', 'Андрей', 'Юлия', 'Николай', 'Екатерина',
   'Владимир', 'Ирина', 'Роман', 'Людмила', 'Виктор', 'Марина'
@@ -72,5 +72,5 @@ const createPhotoDescription = () => ({
   )
 });
 
-export const generatePhotos = () => 
+export const generatePhotos = () =>
   Array.from({ length: PHOTOS_COUNT }, createPhotoDescription);
