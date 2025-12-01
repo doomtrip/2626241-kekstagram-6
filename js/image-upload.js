@@ -7,7 +7,9 @@ window.imageUpload = (function () {
 
   const loadUserImage = () => {
     const file = uploadInput.files[0];
-    if (!file) {return;}
+    if (!file) {
+      return;
+    }
 
     const fileName = file.name.toLowerCase();
     const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
