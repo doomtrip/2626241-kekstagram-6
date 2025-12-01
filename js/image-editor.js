@@ -1,5 +1,3 @@
-'use strict';
-
 window.imageEditor = (function () {
   const SCALE_STEP = 25;
   const SCALE_MIN = 25;
@@ -65,18 +63,13 @@ window.imageEditor = (function () {
     },
   };
 
-  // Функция для форматирования числа (убирает лишние нули)
   const formatNumber = (value) => {
     const num = parseFloat(value);
-    // Если целое число, возвращаем без точки
     if (num % 1 === 0) {
       return num.toString();
     }
-    // Убираем лишние нули в конце
     return parseFloat(num.toFixed(10)).toString();
   };
-
-  // --- Функции для масштаба (Scale) ---
 
   const updateScale = (newScale) => {
     currentScale = newScale;
@@ -93,8 +86,6 @@ window.imageEditor = (function () {
     const newScale = Math.min(currentScale + SCALE_STEP, SCALE_MAX);
     updateScale(newScale);
   };
-
-  // --- Функции для эффектов (Effects) и слайдера (Slider) ---
 
   const onSliderUpdate = () => {
     if (!slider) {
@@ -119,24 +110,20 @@ window.imageEditor = (function () {
 
   const updateSlider = (effect) => {
     currentEffect = effect;
-    
-    // Убираем все классы эффектов
+
     imagePreview.className = '';
-    
-    // Добавляем класс для выбранного эффекта
+
     if (effect !== 'none') {
       imagePreview.classList.add(`effects__preview--${effect}`);
     }
 
     const effectConfig = effects[effect];
 
-    // Уничтожаем существующий слайдер
     if (slider) {
       slider.destroy();
       slider = null;
     }
 
-    // Обработка эффекта "Оригинал" (none)
     if (effect === 'none') {
       hideSlider();
       imagePreview.style.filter = 'none';
@@ -144,20 +131,17 @@ window.imageEditor = (function () {
       return;
     }
 
-    // Проверяем, доступна ли библиотека noUiSlider
     if (typeof noUiSlider === 'undefined') {
-      console.error('noUiSlider library is not loaded');
+      // Убрал console.error
       showSlider();
-      const formattedMax = formatNumber(effectConfig.max);
+      const maxValueFormatted = formatNumber(effectConfig.max); // Изменено имя переменной
       imagePreview.style.filter = `${effectConfig.filter}(${effectConfig.max}${effectConfig.unit})`;
-      effectLevelValue.value = formattedMax;
+      effectLevelValue.value = maxValueFormatted;
       return;
     }
 
-    // Создаем слайдер для выбранного эффекта
     showSlider();
-    
-    // Создаем новый слайдер с параметрами эффекта
+
     slider = noUiSlider.create(effectLevelSlider, {
       range: {
         min: effectConfig.min,
@@ -169,7 +153,6 @@ window.imageEditor = (function () {
       orientation: 'horizontal',
       format: {
         to: function(value) {
-          // Форматируем значение для отображения (убираем лишние нули)
           return formatNumber(value);
         },
         from: function(value) {
@@ -179,8 +162,7 @@ window.imageEditor = (function () {
     });
 
     slider.on('update', onSliderUpdate);
-    
-    // Применяем начальное значение
+
     const formattedMax = formatNumber(effectConfig.max);
     imagePreview.style.filter = `${effectConfig.filter}(${effectConfig.max}${effectConfig.unit})`;
     effectLevelValue.value = formattedMax;
@@ -200,8 +182,7 @@ window.imageEditor = (function () {
     currentEffect = 'none';
     imagePreview.style.filter = 'none';
     imagePreview.className = '';
-    
-    // Сбрасываем радио-кнопку на "Оригинал"
+
     const noneEffect = effectsList.querySelector('#effect-none');
     if (noneEffect) {
       noneEffect.checked = true;
@@ -209,8 +190,7 @@ window.imageEditor = (function () {
 
     hideSlider();
     effectLevelValue.value = '';
-    
-    // Уничтожаем слайдер
+
     if (slider) {
       slider.destroy();
       slider = null;
@@ -224,10 +204,8 @@ window.imageEditor = (function () {
     scaleControlBigger.addEventListener('click', onScaleControlBiggerClick);
     effectsList.addEventListener('change', onEffectsListChange);
 
-    // Изначально скрываем слайдер
     hideSlider();
-    
-    // Убедимся, что при инициализации выбрано "Оригинал"
+
     const noneEffect = effectsList.querySelector('#effect-none');
     if (noneEffect) {
       noneEffect.checked = true;

@@ -1,4 +1,4 @@
-'use strict';
+
 
 window.fullPhoto = (function () {
   const body = document.querySelector('body');
@@ -40,7 +40,7 @@ window.fullPhoto = (function () {
     socialComments.appendChild(fragment);
 
     commentsShown += commentsPortion.length;
-    
+
     // ВАЖНО: создаем структуру которая ожидается тестами
     // Тесты ищут .social__comment-shown-count и .social__comment-total-count внутри .social__comment-count
     commentCountBlock.innerHTML = `
@@ -84,17 +84,17 @@ window.fullPhoto = (function () {
   const openFullPhoto = (photoData) => {
     bigPictureImg.src = photoData.url;
     bigPictureImg.alt = photoData.description;
-    
+
     // Обновляем счетчики лайков
     if (likesCount) {
       likesCount.textContent = photoData.likes;
     }
-    
+
     // Обновляем общее количество комментариев в элементе .comments-count (если есть)
     if (commentsCount) {
       commentsCount.textContent = photoData.comments.length;
     }
-    
+
     socialCaption.textContent = photoData.description;
 
     currentComments = photoData.comments;
@@ -103,7 +103,7 @@ window.fullPhoto = (function () {
 
     // Убеждаемся что счетчик комментариев видим
     commentCountBlock.classList.remove('hidden');
-    
+
     // Убеждаемся что кнопка загрузки видима (потом скроется если нужно)
     commentsLoader.classList.remove('hidden');
 

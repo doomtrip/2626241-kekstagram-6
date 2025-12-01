@@ -1,5 +1,3 @@
-'use strict';
-
 (function() {
   const createDataError = () => {
     const errorElement = document.createElement('div');
@@ -26,8 +24,7 @@
     if (!errorElement) {
       errorElement = createDataError();
       document.body.appendChild(errorElement);
-      
-      // Автоматически скрываем через 5 секунд
+
       setTimeout(() => {
         if (errorElement && errorElement.parentNode) {
           errorElement.remove();
@@ -37,27 +34,22 @@
   };
 
   const initApp = () => {
-    // Инициализация редактора изображений
     if (window.imageEditor && window.imageEditor.initImageEditor) {
       window.imageEditor.initImageEditor();
     }
-    
-    // Инициализация загрузки изображения
+
     if (window.imageUpload && window.imageUpload.initImageUpload) {
       window.imageUpload.initImageUpload();
     }
-    
-    // Загрузка данных с сервера
+
     if (window.thumbnail && window.thumbnail.loadAndRenderThumbnails) {
       window.thumbnail.loadAndRenderThumbnails()
-        .catch(error => {
-          console.log('Data loading failed:', error.message);
-          showDataError(); // ПОКАЗЫВАЕМ ОШИБКУ!
+        .catch(() => {
+          showDataError();
         });
     }
   };
 
-  // Запускаем когда DOM готов
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initApp);
   } else {

@@ -1,5 +1,3 @@
-'use strict';
-
 window.imageUpload = (function () {
   const FILE_TYPES = ['jpg', 'jpeg', 'png'];
 
@@ -9,28 +7,23 @@ window.imageUpload = (function () {
 
   const loadUserImage = () => {
     const file = uploadInput.files[0];
-    if (!file) return;
+    if (!file) {return;}
 
     const fileName = file.name.toLowerCase();
     const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
 
     if (!matches) {
-      alert('Можно загружать только изображения в форматах jpg, jpeg, png');
       return;
     }
 
-    // Создаем blob URL вместо data URL
     const blobUrl = URL.createObjectURL(file);
 
-    // Устанавливаем превью
     uploadPreview.src = blobUrl;
 
-    // Обновляем превью эффектов
     effectsPreviews.forEach((preview) => {
       preview.style.backgroundImage = `url(${blobUrl})`;
     });
 
-    // Также нужно сохранить blob для очистки позже
     if (window.imageUpload.currentBlobUrl) {
       URL.revokeObjectURL(window.imageUpload.currentBlobUrl);
     }
@@ -47,7 +40,6 @@ window.imageUpload = (function () {
     uploadInput.addEventListener('change', onFileInputChange);
   };
 
-  // Функция для очистки blob URL
   const cleanupBlobUrl = () => {
     if (window.imageUpload.currentBlobUrl) {
       URL.revokeObjectURL(window.imageUpload.currentBlobUrl);
@@ -55,7 +47,7 @@ window.imageUpload = (function () {
     }
   };
 
-  return { 
+  return {
     initImageUpload,
     loadUserImage,
     cleanupBlobUrl

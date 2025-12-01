@@ -1,5 +1,3 @@
-'use strict';
-
 window.api = (function () {
   const BASE_URL = 'https://32.javascript.htmlacademy.pro/kekstagram'; // ПО ТЗ 29, НО ТЕСТЫ ВИДЯТ ТОЛЬКО 32
 
@@ -30,10 +28,7 @@ window.api = (function () {
         throw new Error(errorText);
       });
 
-  const getData = () => {
-    console.log('Fetching data from:', `${BASE_URL}${Route.GET_DATA}`);
-    return load(Route.GET_DATA, ErrorText.GET_DATA);
-  };
+  const getData = () => load(Route.GET_DATA, ErrorText.GET_DATA);
 
   const sendData = (body) => load(Route.SEND_DATA, ErrorText.SEND_DATA, Method.POST, body);
 

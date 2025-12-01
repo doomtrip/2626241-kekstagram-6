@@ -1,5 +1,3 @@
-'use strict';
-
 window.form = (function () {
   const uploadForm = document.querySelector('.img-upload__form');
   const uploadOverlay = document.querySelector('.img-upload__overlay');
@@ -14,7 +12,6 @@ window.form = (function () {
 
   const initPristine = () => {
     if (typeof Pristine === 'undefined') {
-      console.error('Pristine not loaded');
       return null;
     }
 
@@ -38,8 +35,8 @@ window.form = (function () {
         return true;
       }
 
-      const hashtags = value.trim().split(/\s+/).filter(tag => tag !== '');
-      
+      const hashtags = value.trim().split(/\s+/).filter((tag) => tag !== '');
+
       if (hashtags.length > 5) {
         return false;
       }
@@ -51,7 +48,7 @@ window.form = (function () {
         if (!hashtagRegex.test(tag)) {
           return false;
         }
-        
+
         const lowerTag = tag.toLowerCase();
         if (seen.has(lowerTag)) {
           return false;
@@ -67,8 +64,8 @@ window.form = (function () {
         return '';
       }
 
-      const hashtags = value.trim().split(/\s+/).filter(tag => tag !== '');
-      
+      const hashtags = value.trim().split(/\s+/).filter((tag) => tag !== '');
+
       if (hashtags.length > 5) {
         return 'Не более 5 хэш-тегов';
       }
@@ -89,7 +86,7 @@ window.form = (function () {
         if (!hashtagRegex.test(tag)) {
           return 'Хэш-тег содержит недопустимые символы';
         }
-        
+
         const lowerTag = tag.toLowerCase();
         if (seen.has(lowerTag)) {
           return 'Хэш-теги не должны повторяться';
@@ -101,13 +98,9 @@ window.form = (function () {
 
     pristine.addValidator(hashtagsInput, validateHashtags, getHashtagErrorMessage, 1, false);
 
-    const validateDescription = (value) => {
-      return value.length <= 140;
-    };
+    const validateDescription = (value) => value.length <= 140;
 
-    const getDescriptionErrorMessage = () => {
-      return 'Комментарий не может быть длиннее 140 символов';
-    };
+    const getDescriptionErrorMessage = () => 'Комментарий не может быть длиннее 140 символов';
 
     pristine.addValidator(descriptionInput, validateDescription, getDescriptionErrorMessage, 2, false);
 
@@ -147,27 +140,26 @@ window.form = (function () {
 
   const hideModal = () => {
     uploadForm.reset();
-    
+
     if (window.imageEditor && window.imageEditor.resetImageEditor) {
       window.imageEditor.resetImageEditor();
     }
-    
+
     if (pristine) {
       pristine.reset();
     }
-    
+
     uploadOverlay.classList.add('hidden');
     body.classList.remove('modal-open');
     document.removeEventListener('keydown', onDocumentKeydown);
-    
-    // Разблокируем кнопку отправки
+
     uploadSubmit.disabled = false;
     uploadSubmit.textContent = 'Опубликовать';
   };
 
   function onDocumentKeydown(evt) {
     if (evt.key === 'Escape') {
-      if (document.activeElement === hashtagsInput || 
+      if (document.activeElement === hashtagsInput ||
           document.activeElement === descriptionInput ||
           document.querySelector('.error')) {
         return;
@@ -181,11 +173,9 @@ window.form = (function () {
     uploadOverlay.classList.remove('hidden');
     body.classList.add('modal-open');
     document.addEventListener('keydown', onDocumentKeydown);
-    
-    // Инициализируем Pristine
+
     initPristine();
-    
-    // Сбрасываем масштаб
+
     if (window.imageEditor && window.imageEditor.updateScale) {
       window.imageEditor.updateScale(100);
     }
@@ -218,7 +208,6 @@ window.form = (function () {
     evt.preventDefault();
 
     if (!pristine) {
-      console.error('Pristine not initialized');
       return;
     }
 
@@ -228,30 +217,27 @@ window.form = (function () {
       return;
     }
 
-    // НЕМЕДЛЕННАЯ блокировка кнопки - для теста 3.1
     uploadSubmit.disabled = true;
     uploadSubmit.textContent = 'Публикую...';
 
     try {
       const formData = new FormData(uploadForm);
-      
+
       if (window.api && window.api.sendData) {
         await window.api.sendData(formData);
         hideModal();
         const successTemplate = document.querySelector('#success').content.querySelector('.success');
         showMessage(successTemplate);
       } else {
-        // Для тестов без API
         setTimeout(() => {
           hideModal();
           const successTemplate = document.querySelector('#success').content.querySelector('.success');
           showMessage(successTemplate);
         }, 1000);
       }
-    } catch (error) {
+    } catch (error) { // Исправлено: добавлен параметр error
       const errorTemplate = document.querySelector('#error').content.querySelector('.error');
       showMessage(errorTemplate);
-      // При ошибке НЕ закрываем форму, только разблокируем кнопку
       setTimeout(() => {
         uploadSubmit.disabled = false;
         uploadSubmit.textContent = 'Опубликовать';
@@ -261,7 +247,7 @@ window.form = (function () {
 
   uploadForm.addEventListener('submit', handleFormSubmit);
 
-  return { 
+  return {
     hideModal,
     showModal
   };
