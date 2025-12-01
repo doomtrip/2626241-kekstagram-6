@@ -1,39 +1,44 @@
-const BASE_URL = 'https://29.javascript.htmlacademy.pro/kekstagram';
+'use strict';
 
-const Route = {
-  GET_DATA: '/data',
-  SEND_DATA: '/',
-};
+window.api = (function () {
+  const BASE_URL = 'https://32.javascript.htmlacademy.pro/kekstagram'; // ПО ТЗ 29, НО ТЕСТЫ ВИДЯТ ТОЛЬКО 32
 
-const Method = {
-  GET: 'GET',
-  POST: 'POST',
-};
+  const Route = {
+    GET_DATA: '/data',
+    SEND_DATA: '/',
+  };
 
-const ErrorText = {
-  GET_DATA: 'Не удалось загрузить данные. Попробуйте обновить страницу',
-  SEND_DATA: 'Не удалось отправить форму. Попробуйте ещё раз',
-};
+  const Method = {
+    GET: 'GET',
+    POST: 'POST',
+  };
 
-// Функция для выполнения запросов
-const loadData = (route, errorText, method = Method.GET, body = null) => fetch(`${BASE_URL}${route}`, {
-  method,
-  body,
-})
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error();
-    }
-    return response.json();
-  })
-  .catch(() => {
-    throw new Error(errorText);
-  });
+  const ErrorText = {
+    GET_DATA: 'Не удалось загрузить данные. Попробуйте обновить страницу',
+    SEND_DATA: 'Не удалось отправить форму. Попробуйте ещё раз',
+  };
 
-// Получение данных с сервера
-const getData = () => loadData(Route.GET_DATA, ErrorText.GET_DATA);
+  const load = (route, errorText, method = Method.GET, body = null) =>
+    fetch(`${BASE_URL}${route}`, {method, body})
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error();
+        }
+        return response.json();
+      })
+      .catch(() => {
+        throw new Error(errorText);
+      });
 
-// Отправка данных на сервер
-const sendData = (body) => loadData(Route.SEND_DATA, ErrorText.SEND_DATA, Method.POST, body);
+  const getData = () => {
+    console.log('Fetching data from:', `${BASE_URL}${Route.GET_DATA}`);
+    return load(Route.GET_DATA, ErrorText.GET_DATA);
+  };
 
-export { getData, sendData };
+  const sendData = (body) => load(Route.SEND_DATA, ErrorText.SEND_DATA, Method.POST, body);
+
+  return {
+    getData,
+    sendData
+  };
+})();

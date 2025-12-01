@@ -1,47 +1,63 @@
-const FILE_TYPES = ['jpg', 'jpeg', 'png'];
+'use strict';
 
-const uploadInput = document.querySelector('#upload-file');
-const uploadPreview = document.querySelector('.img-upload__preview img');
-const effectsPreviews = document.querySelectorAll('.effects__preview');
+window.imageUpload = (function () {
+  const FILE_TYPES = ['jpg', 'jpeg', 'png'];
 
-// Функция для загрузки и отображения изображения
-const loadUserImage = () => {
-  const file = uploadInput.files[0];
-  const fileName = file.name.toLowerCase();
+  const uploadInput = document.querySelector('#upload-file');
+  const uploadPreview = document.querySelector('.img-upload__preview img');
+  const effectsPreviews = document.querySelectorAll('.effects__preview');
 
-  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+  const loadUserImage = () => {
+    const file = uploadInput.files[0];
+    if (!file) return;
 
-  if (!matches) {
-    return;
-  }
+    const fileName = file.name.toLowerCase();
+    const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
 
-  const reader = new FileReader();
+    if (!matches) {
+      alert('Можно загружать только изображения в форматах jpg, jpeg, png');
+      return;
+    }
 
-  reader.addEventListener('load', () => {
-    const result = reader.result;
+    // Создаем blob URL вместо data URL
+    const blobUrl = URL.createObjectURL(file);
 
-    // Устанавливаем изображение в основное превью
-    uploadPreview.src = result;
+    // Устанавливаем превью
+    uploadPreview.src = blobUrl;
 
-    // Устанавливаем изображение во все превью эффектов
+    // Обновляем превью эффектов
     effectsPreviews.forEach((preview) => {
-      preview.style.backgroundImage = `url(${result})`;
+      preview.style.backgroundImage = `url(${blobUrl})`;
     });
-  });
 
-  reader.readAsDataURL(file);
-};
+    // Также нужно сохранить blob для очистки позже
+    if (window.imageUpload.currentBlobUrl) {
+      URL.revokeObjectURL(window.imageUpload.currentBlobUrl);
+    }
+    window.imageUpload.currentBlobUrl = blobUrl;
+  };
 
-// Обработчик изменения файла
-const onFileInputChange = () => {
-  if (uploadInput.files.length > 0) {
-    loadUserImage();
-  }
-};
+  const onFileInputChange = () => {
+    if (uploadInput.files.length > 0) {
+      loadUserImage();
+    }
+  };
 
-// Инициализация загрузки изображения
-const initImageUpload = () => {
-  uploadInput.addEventListener('change', onFileInputChange);
-};
+  const initImageUpload = () => {
+    uploadInput.addEventListener('change', onFileInputChange);
+  };
 
-export { initImageUpload };
+  // Функция для очистки blob URL
+  const cleanupBlobUrl = () => {
+    if (window.imageUpload.currentBlobUrl) {
+      URL.revokeObjectURL(window.imageUpload.currentBlobUrl);
+      window.imageUpload.currentBlobUrl = null;
+    }
+  };
+
+  return { 
+    initImageUpload,
+    loadUserImage,
+    cleanupBlobUrl
+  };
+})();
