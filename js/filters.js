@@ -1,105 +1,102 @@
-window.filters = (function () {
-  const filtersContainer = document.querySelector('.img-filters');
-  const filterButtons = {
-    default: document.querySelector('#filter-default'),
-    random: document.querySelector('#filter-random'),
-    discussed: document.querySelector('#filter-discussed')
-  };
+import { renderThumbnails } from './thumbnail.js';
 
-  let currentFilter = 'default';
-  let photos = [];
-  let applyFilterTimeout = null;
+const filtersContainer = document.querySelector('.img-filters');
+const filterButtons = {
+  default: document.querySelector('#filter-default'),
+  random: document.querySelector('#filter-random'),
+  discussed: document.querySelector('#filter-discussed')
+};
 
-  const getDefaultPhotos = () => [...photos];
+let currentFilter = 'default';
+let photos = [];
+let applyFilterTimeout = null;
 
-  const getRandomPhotos = () => {
-    const shuffled = [...photos].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, 10);
-  };
+const getDefaultPhotos = () => [...photos];
 
-  const getDiscussedPhotos = () => [...photos].sort((a, b) => b.comments.length - a.comments.length);
+const getRandomPhotos = () => {
+  const shuffled = [...photos].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, 10);
+};
 
-  const setActiveButton = (filterName) => {
-    Object.values(filterButtons).forEach((button) => {
-      if (button) {
-        button.classList.remove('img-filters__button--active');
-      }
-    });
+const getDiscussedPhotos = () => [...photos].sort((a, b) => b.comments.length - a.comments.length);
 
-    if (filterButtons[filterName]) {
-      filterButtons[filterName].classList.add('img-filters__button--active');
+const setActiveButton = (filterName) => {
+  Object.values(filterButtons).forEach((button) => {
+    if (button) {
+      button.classList.remove('img-filters__button--active');
     }
+  });
 
-    currentFilter = filterName;
-  };
+  if (filterButtons[filterName]) {
+    filterButtons[filterName].classList.add('img-filters__button--active');
+  }
 
-  const applyFilter = () => {
-    if (!photos.length || !window.thumbnail || !window.thumbnail.renderThumbnails) {
-      return;
-    }
+  currentFilter = filterName;
+};
 
-    let filteredPhotos;
-    switch (currentFilter) {
-      case 'random':
-        filteredPhotos = getRandomPhotos();
-        break;
-      case 'discussed':
-        filteredPhotos = getDiscussedPhotos();
-        break;
-      default:
-        filteredPhotos = getDefaultPhotos();
-    }
+const applyFilter = () => {
+  if (!photos.length) {
+    return;
+  }
 
-    if (applyFilterTimeout) {
-      clearTimeout(applyFilterTimeout);
-    }
+  let filteredPhotos;
+  switch (currentFilter) {
+    case 'random':
+      filteredPhotos = getRandomPhotos();
+      break;
+    case 'discussed':
+      filteredPhotos = getDiscussedPhotos();
+      break;
+    default:
+      filteredPhotos = getDefaultPhotos();
+  }
 
-    applyFilterTimeout = setTimeout(() => {
-      window.thumbnail.renderThumbnails(filteredPhotos);
-    }, 500);
-  };
+  if (applyFilterTimeout) {
+    clearTimeout(applyFilterTimeout);
+  }
 
-  const onDefaultClick = (evt) => {
-    evt.preventDefault();
-    setActiveButton('default');
-    applyFilter();
-  };
+  applyFilterTimeout = setTimeout(() => {
+    renderThumbnails(filteredPhotos);
+  }, 500);
+};
 
-  const onRandomClick = (evt) => {
-    evt.preventDefault();
-    setActiveButton('random');
-    applyFilter();
-  };
+const onDefaultClick = (evt) => {
+  evt.preventDefault();
+  setActiveButton('default');
+  applyFilter();
+};
 
-  const onDiscussedClick = (evt) => {
-    evt.preventDefault();
-    setActiveButton('discussed');
-    applyFilter();
-  };
+const onRandomClick = (evt) => {
+  evt.preventDefault();
+  setActiveButton('random');
+  applyFilter();
+};
 
-  const initFilters = (loadedPhotos) => {
-    if (loadedPhotos && loadedPhotos.length) {
-      photos = loadedPhotos;
-    }
+const onDiscussedClick = (evt) => {
+  evt.preventDefault();
+  setActiveButton('discussed');
+  applyFilter();
+};
 
-    filtersContainer.classList.remove('img-filters--inactive');
+const initFilters = (loadedPhotos) => {
+  if (loadedPhotos && loadedPhotos.length) {
+    photos = loadedPhotos;
+  }
 
-    if (filterButtons.default) {
-      filterButtons.default.addEventListener('click', onDefaultClick);
-      filterButtons.default.classList.add('img-filters__button--active');
-    }
+  filtersContainer.classList.remove('img-filters--inactive');
 
-    if (filterButtons.random) {
-      filterButtons.random.addEventListener('click', onRandomClick);
-    }
+  if (filterButtons.default) {
+    filterButtons.default.addEventListener('click', onDefaultClick);
+    filterButtons.default.classList.add('img-filters__button--active');
+  }
 
-    if (filterButtons.discussed) {
-      filterButtons.discussed.addEventListener('click', onDiscussedClick);
-    }
-  };
+  if (filterButtons.random) {
+    filterButtons.random.addEventListener('click', onRandomClick);
+  }
 
-  return {
-    initFilters,
-    setActiveButton
-  };
-})();
+  if (filterButtons.discussed) {
+    filterButtons.discussed.addEventListener('click', onDiscussedClick);
+  }
+};
+
+export { initFilters, setActiveButton };

@@ -1,79 +1,68 @@
-window.thumbnail = (function () {
-  const picturesContainer = document.querySelector('.pictures');
-  const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
-  const filtersContainer = document.querySelector('.img-filters');
+import { getData } from './api.js';
+import { initFilters } from './filters.js';
+import { openFullPhoto } from './full-photo.js';
 
-  let photos = [];
+const picturesContainer = document.querySelector('.pictures');
+const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
+const filtersContainer = document.querySelector('.img-filters');
 
-  const renderThumbnails = (data = photos) => {
-    const fragment = document.createDocumentFragment();
+let photos = [];
 
-    const existingThumbnails = picturesContainer.querySelectorAll('.picture');
-    existingThumbnails.forEach((thumbnail) => thumbnail.remove());
+const renderThumbnails = (data = photos) => {
+  const fragment = document.createDocumentFragment();
 
-    data.forEach((photo, index) => {
-      const thumbnail = pictureTemplate.cloneNode(true);
-      const image = thumbnail.querySelector('.picture__img');
-      const likes = thumbnail.querySelector('.picture__likes');
-      const comments = thumbnail.querySelector('.picture__comments');
+  const existingThumbnails = picturesContainer.querySelectorAll('.picture');
+  existingThumbnails.forEach((thumbnail) => thumbnail.remove());
 
-      image.src = photo.url;
-      image.alt = photo.description;
-      likes.textContent = photo.likes;
-      comments.textContent = photo.comments.length;
+  data.forEach((photo) => {
+    const thumbnail = pictureTemplate.cloneNode(true);
+    const image = thumbnail.querySelector('.picture__img');
+    const likes = thumbnail.querySelector('.picture__likes');
+    const comments = thumbnail.querySelector('.picture__comments');
 
-      thumbnail.dataset.index = index;
-      thumbnail.dataset.id = photo.id;
+    image.src = photo.url;
+    image.alt = photo.description;
+    likes.textContent = photo.likes;
+    comments.textContent = photo.comments.length;
 
-      thumbnail.addEventListener('click', (evt) => {
-        evt.preventDefault();
-        if (window.fullPhoto && window.fullPhoto.openFullPhoto) {
-          window.fullPhoto.openFullPhoto(photo);
-        }
-      });
+    thumbnail.dataset.id = photo.id;
 
-      fragment.appendChild(thumbnail);
+    thumbnail.addEventListener('click', (evt) => {
+      evt.preventDefault();
+      openFullPhoto(photo);
     });
 
-    picturesContainer.appendChild(fragment);
-  };
+    fragment.appendChild(thumbnail);
+  });
 
-  const loadAndRenderThumbnails = () => {
-    if (window.api && window.api.getData) {
-      return window.api.getData()
-        .then((data) => {
-          photos = data;
-          renderThumbnails(photos);
+  picturesContainer.appendChild(fragment);
+};
 
-          if (filtersContainer) {
-            filtersContainer.classList.remove('img-filters--inactive');
+const loadAndRenderThumbnails = () => {
+  return getData()
+    .then((data) => {
+      photos = data;
+      renderThumbnails(photos);
 
-            const defaultButton = filtersContainer.querySelector('#filter-default');
-            if (defaultButton) {
-              defaultButton.classList.add('img-filters__button--active');
-            }
-          }
+      if (filtersContainer) {
+        filtersContainer.classList.remove('img-filters--inactive');
 
-          if (window.filters && window.filters.initFilters) {
-            window.filters.initFilters(photos);
-          }
+        const defaultButton = filtersContainer.querySelector('#filter-default');
+        if (defaultButton) {
+          defaultButton.classList.add('img-filters__button--active');
+        }
+      }
 
-          return data;
-        })
-        .catch(() => {
-          if (filtersContainer) {
-            filtersContainer.classList.add('img-filters--inactive');
-          }
-          throw new Error('Failed to load photos');
-        });
-    } else {
-      return Promise.reject(new Error('API module not loaded'));
-    }
-  };
+      initFilters(photos);
 
-  return {
-    loadAndRenderThumbnails,
-    photos,
-    renderThumbnails
-  };
-})();
+      return data;
+    })
+    .catch(() => {
+      if (filtersContainer) {
+        filtersContainer.classList.add('img-filters--inactive');
+      }
+      throw new Error('Failed to load photos');
+    });
+};
+
+export { loadAndRenderThumbnails, photos, renderThumbnails };
