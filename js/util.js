@@ -14,4 +14,4 @@ export {
   getRandomArrayElement,
   createIdGenerator,
   isEscapeKey
-};
+}; 
