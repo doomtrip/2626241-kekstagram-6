@@ -38,35 +38,33 @@ const showDataError = () => {
   }
 };
 
-const loadAndRenderThumbnails = () => {
-  return getData()
-    .then((data) => {
-      photos.length = 0;
-      photos.push(...data);
-      renderThumbnails(photos);
+const loadAndRenderThumbnails = () => getData()
+  .then((data) => {
+    photos.length = 0;
+    photos.push(...data);
+    renderThumbnails(photos);
 
-      const filtersContainer = document.querySelector('.img-filters');
-      if (filtersContainer) {
-        filtersContainer.classList.remove('img-filters--inactive');
+    const filtersContainer = document.querySelector('.img-filters');
+    if (filtersContainer) {
+      filtersContainer.classList.remove('img-filters--inactive');
 
-        const defaultButton = filtersContainer.querySelector('#filter-default');
-        if (defaultButton) {
-          defaultButton.classList.add('img-filters__button--active');
-        }
+      const defaultButton = filtersContainer.querySelector('#filter-default');
+      if (defaultButton) {
+        defaultButton.classList.add('img-filters__button--active');
       }
+    }
 
-      initFilters(photos);
+    initFilters(photos);
 
-      return data;
-    })
-    .catch(() => {
-      const filtersContainer = document.querySelector('.img-filters');
-      if (filtersContainer) {
-        filtersContainer.classList.add('img-filters--inactive');
-      }
-      throw new Error('Failed to load photos');
-    });
-};
+    return data;
+  })
+  .catch(() => {
+    const filtersContainer = document.querySelector('.img-filters');
+    if (filtersContainer) {
+      filtersContainer.classList.add('img-filters--inactive');
+    }
+    throw new Error('Failed to load photos');
+  });
 
 const initApp = () => {
   initImageEditor();

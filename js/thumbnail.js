@@ -38,31 +38,29 @@ const renderThumbnails = (data = photos) => {
   picturesContainer.appendChild(fragment);
 };
 
-const loadAndRenderThumbnails = () => {
-  return getData()
-    .then((data) => {
-      photos = data;
-      renderThumbnails(photos);
+const loadAndRenderThumbnails = () => getData()
+  .then((data) => {
+    photos = data;
+    renderThumbnails(photos);
 
-      if (filtersContainer) {
-        filtersContainer.classList.remove('img-filters--inactive');
+    if (filtersContainer) {
+      filtersContainer.classList.remove('img-filters--inactive');
 
-        const defaultButton = filtersContainer.querySelector('#filter-default');
-        if (defaultButton) {
-          defaultButton.classList.add('img-filters__button--active');
-        }
+      const defaultButton = filtersContainer.querySelector('#filter-default');
+      if (defaultButton) {
+        defaultButton.classList.add('img-filters__button--active');
       }
+    }
 
-      initFilters(photos);
+    initFilters(photos);
 
-      return data;
-    })
-    .catch(() => {
-      if (filtersContainer) {
-        filtersContainer.classList.add('img-filters--inactive');
-      }
-      throw new Error('Failed to load photos');
-    });
-};
+    return data;
+  })
+  .catch(() => {
+    if (filtersContainer) {
+      filtersContainer.classList.add('img-filters--inactive');
+    }
+    throw new Error('Failed to load photos');
+  });
 
 export { loadAndRenderThumbnails, photos, renderThumbnails };
